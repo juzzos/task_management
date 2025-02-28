@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Tasks</h1>
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr class="{{ 'table-success' if task.status == 'completed' }}">
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.owner.username }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if task.status == 'completed' else 'warning' }}">
+                                    {{ task.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 'danger' if task.priority == 'high' else 'warning' if task.priority == 'medium' else 'success' }}">
+                                    {{ task.priority }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if task.deadline %}
+                                {{ task.deadline.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                No deadline
+                                {% endif %}
+                            </td>
+                            <td>{{ task.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    {% if task.file_path %}
+                                    <a href="{{ url_for('uploaded_file', filename=task.file_path) }}" 
+                                       class="btn btn-sm btn-info" target="_blank">
+                                        <i class="fas fa-file"></i> View File
+                                    </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('tasks.edit_task', task_id=task.id) }}" 
+                                       class="btn btn-sm btn-secondary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{{ url_for('tasks.delete_task', task_id=task.id) }}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this task?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

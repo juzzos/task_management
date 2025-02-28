@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Welcome, {{ current_user.username }}!</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('tasks.new_task') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Task
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">High Priority</h5>
+            </div>
+            <div class="card-body">
+                {% for task in tasks if task.priority == 'high' and task.status != 'completed' %}
+                    {% include 'task_card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Medium Priority</h5>
+            </div>
+            <div class="card-body">
+                {% for task in tasks if task.priority == 'medium' and task.status != 'completed' %}
+                    {% include 'task_card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Low Priority</h5>
+            </div>
+            <div class="card-body">
+                {% for task in tasks if task.priority == 'low' and task.status != 'completed' %}
+                    {% include 'task_card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Completed Tasks</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for task in tasks if task.status == 'completed' %}
+                <div class="col-md-4">
+                    {% include 'task_card.html' %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Edit Task</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('tasks.edit_task', task_id=task.id) }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ task.description }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label">Deadline</label>
+                        <input type="datetime-local" class="form-control" id="deadline" name="deadline" 
+                               value="{{ task.deadline.strftime('%Y-%m-%dT%H:%M') if task.deadline }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority" required>
+                            <option value="low" {{ 'selected' if task.priority == 'low' }}>Low</option>
+                            <option value="medium" {{ 'selected' if task.priority == 'medium' }}>Medium</option>
+                            <option value="high" {{ 'selected' if task.priority == 'high' }}>High</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="pending" {{ 'selected' if task.status == 'pending' }}>Pending</option>
+                            <option value="completed" {{ 'selected' if task.status == 'completed' }}>Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Attachment</label>
+                        {% if task.file_path %}
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                Current file: 
+                                <a href="{{ url_for('uploaded_file', filename=task.file_path) }}" target="_blank">
+                                    {{ task.file_path }}
+                                </a>
+                            </small>
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="file" name="file">
+                        <div class="form-text">
+                            Allowed file types: PDF, DOC, DOCX, TXT (Max size: 16MB)
+                            {% if task.file_path %}
+                            <br>Uploading a new file will replace the current one.
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Task</button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
